@@ -305,5 +305,5 @@ telnet-ssl -z ssl localhost `TLS Telnet Port`
 This tutorial could be improved with the following updates:
 * nightmare3 - verify websocket web client works
 * nightmare3 - should display if user is connected via TLS port
-* nightmare3 - update driver version for efun::sys_refresh_tls(TLS_PORT)
+* nightmare3 - update driver version for efun::sys_refresh_tls(external_port_# of TLS_PORT)
 * ldmud-hook.py - possibility of fork for fluffos
