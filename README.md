@@ -182,7 +182,7 @@ Adjust mudlib config:
 vi /home/mud/game/nm3.cfg
 ```
 
-Adjust mudlib directory to the correct absolute path:
+Update mudlib directory to the correct absolute path:
 ```
 # absolute pathname of mudlib
 mudlib directory : /home/mud/game/lib
@@ -219,11 +219,22 @@ Seed initial certificates to mudlib:
 ```
 certbot --force-renewal
 
-# @TODO verify this section
+# @TODO verify this section is necessary or if above command is all thats necessary
 cp /etc/letsencrypt/live/`Server Domain Name`/fullchain.pem ~mud/game/cert.pem
 cp /etc/letsencrypt/live/`Server Domain Name`/chain.pem ~mud/game/issuer.pem
 cp /etc/letsencrypt/live/`Server Domain Name`/privkey.pem ~mud/game/key.pem
 chown mud:mud ~mud/game/lib/*.pem
+```
+
+Adjust mudlib config:
+```sh
+vi /home/mud/game/nm3.cfg
+```
+
+Add a telnet port with TLS, pointing to the certificates:
+```
+external_port_2: telnet 6667
+external_port_2_tls: cert=cert.pem key=key.pem
 ```
 
 https://`Server Domain Name` should connect and display.
