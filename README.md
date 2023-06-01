@@ -182,12 +182,11 @@ Adjust mudlib config:
 vi /home/mud/game/nm3.cfg
 ```
 
+Adjust mudlib directory to the correct absolute path:
 ```
 # absolute pathname of mudlib
 mudlib directory : /home/mud/game/lib
 ```
-
-Adjust
 
 # HTTPS Setup
 
