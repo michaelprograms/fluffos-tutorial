@@ -149,7 +149,7 @@ ssh-keygen -t ed25519 -C "your@email"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
-Also copy ~/.ssh/id_ed25519.pub to your GitHub SSH keys: https://github.com/settings/keys
+Copy `~/.ssh/id_ed25519.pub` to your GitHub SSH keys: https://github.com/settings/keys
 
 # Driver and Mudlib Setup
 
