@@ -218,8 +218,10 @@ certbot --apache
 Seed initial certificates to mudlib:
 ```
 certbot --force-renewal
+```
 
-# @TODO verify this section is necessary or if above command is all thats necessary
+If it doesn't work, you can manually set up the initial files:
+```
 cp /etc/letsencrypt/live/`Server Domain Name`/fullchain.pem ~mud/game/cert.pem
 cp /etc/letsencrypt/live/`Server Domain Name`/chain.pem ~mud/game/issuer.pem
 cp /etc/letsencrypt/live/`Server Domain Name`/privkey.pem ~mud/game/key.pem
