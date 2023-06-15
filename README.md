@@ -21,7 +21,7 @@ As such, this tutorial is opinionated and is based on Ubuntu, Apache2, Certbox, 
 6. [Driver and Mudlib](#driver-and-mudlib-setup)
 7. [Apache TLS Setup](#apache-tls-setup)
 8. [Fluffos TLS Setup](#fluffos-tls-setup)
-9. [Systemd Service](#systemd-service)
+9. [Systemd Service Setup](#systemd-service-setup)
 10. [Test Connections](#test-connections)
 11. [Future Updates](#future-updates)
 
@@ -29,7 +29,7 @@ As such, this tutorial is opinionated and is based on Ubuntu, Apache2, Certbox, 
 
 This tutorial assumes you have the following:
 * a Digital Ocean account
-* a domain name
+* a domain name to use for `Server Domain Name`
 * command line experience
 
 # Server Creation
@@ -48,7 +48,7 @@ After creation:
 
 # DNS Records
 
-Add an "A" record with `Server IPv4 address` for `Server Domain Name`.
+Add an "A" record with `Server IPv4 address` for your `Server Domain Name`.
 ```
 @ A ###.###.###.###
 ```
@@ -217,6 +217,10 @@ chmod +x /etc/letsencrypt/renewal-hooks/deploy/fluffos-hook
 certbot --apache
 ```
 
+https://`Server Domain Name` should connect and display.
+
+# Fluffos TLS Setup
+
 Seed initial certificates to mudlib:
 ```
 certbot --force-renewal
@@ -230,8 +234,6 @@ cp /etc/letsencrypt/live/`Server Domain Name`/privkey.pem ~mud/game/key.pem
 chown mud:mud ~mud/game/lib/*.pem
 ```
 
-# Fluffos TLS Setup
-
 Adjust mudlib config:
 ```sh
 vi /home/mud/game/nm3.cfg
@@ -243,9 +245,7 @@ external_port_2: telnet 6667
 external_port_2_tls: cert=cert.pem key=key.pem
 ```
 
-https://`Server Domain Name` should connect and display.
-
-# Systemd Service
+# Systemd Service Setup
 
 Connect as root user:
 ```sh
