@@ -4,7 +4,7 @@ The goal of this tutorial is to document the setup of a server running:
 * the fluffos driver
 * a basic mudlib
 * a website
-* SSL
+* with TLS
 
 This tutorial was inspired by the following LDMud Tutorial: https://github.com/cpu/ldmud-tutorial
 
