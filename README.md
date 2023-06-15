@@ -279,7 +279,7 @@ systemctl start mud
 systemctl status mud
 ```
 
-Fluffos MUD Driver output:
+To check Fluffos MUD Driver output:
 ```sh
 journalctl -e -u mud
 ```
