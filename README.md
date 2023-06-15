@@ -19,9 +19,10 @@ As such, this tutorial is opinionated and is based on Ubuntu, Apache2, Certbox, 
 5. [Git Setup](#git-setup)
 6. [Driver and Mudlib](#driver-and-mudlib-setup)
 7. [HTTPS Setup](#https-setup)
-8. [Systemd Service](#systemd-service)
-9. [Test Connections](#test-connections)
-10. [Future Updates](#future-updates)
+8. [Fluffos TLS Setup](#fluffos-tls-setup)
+9. [Systemd Service](#systemd-service)
+10. [Test Connections](#test-connections)
+11. [Future Updates](#future-updates)
 
 # Prerequisites
 
@@ -228,12 +229,14 @@ cp /etc/letsencrypt/live/`Server Domain Name`/privkey.pem ~mud/game/key.pem
 chown mud:mud ~mud/game/lib/*.pem
 ```
 
+# Fluffos TLS Setup
+
 Adjust mudlib config:
 ```sh
 vi /home/mud/game/nm3.cfg
 ```
 
-Add a telnet port with TLS, pointing to the certificates:
+Add a telnet port with TLS, pointing to the certificates from the previous step:
 ```
 external_port_2: telnet 6667
 external_port_2_tls: cert=cert.pem key=key.pem
