@@ -41,7 +41,7 @@ Configuration options:
 - 1 vCPU, 1 GB RAM, 25 GB disk
 
 After creation:
-1. Add your SHH key.
+1. [Add your SSH key](https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/).
 2. Make note of `Server IPv4 address`.
 
 *Note: Fluffos needs 1 GB RAM to build.*
