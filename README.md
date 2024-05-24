@@ -18,7 +18,7 @@ As such, this tutorial is opinionated and is based on Ubuntu, Apache2, Certbox, 
 3. [Server Setup](#server-setup)
 4. [Website Setup](#website-setup)
 5. [Git Setup](#git-setup)
-6. [Driver and Mudlib](#driver-and-mudlib-setup)
+6. [Driver and Mudlib Setup](#driver-and-mudlib-setup)
 7. [Apache TLS Setup](#apache-tls-setup)
 8. [Fluffos TLS Setup](#fluffos-tls-setup)
 9. [Systemd Service Setup](#systemd-service-setup)
