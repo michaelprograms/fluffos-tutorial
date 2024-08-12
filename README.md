@@ -1,8 +1,8 @@
-# Fluffos Tutorial
+# FluffOS Tutorial
 
 The goal of this tutorial is to document the setup of a server running:
-* the fluffos driver
-* a basic mudlib
+* the FluffOS driver
+* a basic mudlib (nightmare3)
 * a website
 * with TLS
 
@@ -67,16 +67,24 @@ apt-get update -yy && apt-get upgrade -yy && apt-get dist-upgrade -yy
 
 Install required software:
 ```sh
-apt-get install -y build-essential autoconf automake bison \
-  cmake libpq-dev libtool libz-dev libgtest-dev libicu-dev \
-  libjemalloc-dev libmysqlclient-dev libsqlite3-dev \
-  libpcre3-dev libssl-dev telnet telnet-ssl apache2 git
+// Ubuntu:
+apt-get install -y build-essential autoconf automake bison cmake git telnet \
+  telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
+  libsqlite3-dev libpcre3-dev libssl-dev apache2 libmysqlclient-dev
+
+# Debian:
+apt-get install -y build-essential autoconf automake bison cmake git telnet \
+  telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
+  libsqlite3-dev libpcre3-dev libssl-dev apache2 default-libmysqlclient-dev
 ```
 
 Setup non-root user:
 ```sh
 adduser mud
+```
 
+Copy SSH key from root user:
+```sh
 mkdir ~mud/.ssh
 cp ~/.ssh/authorized_keys ~mud/.ssh/
 chown -R mud:mud ~mud/.ssh
@@ -148,6 +156,8 @@ git config --global user.name "Your Name"
 Setup github key:
 ```sh
 ssh-keygen -t ed25519 -C "your@email"
+```
+```sh
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
