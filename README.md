@@ -72,7 +72,7 @@ __Debian:__
 ```sh
 apt-get install -y build-essential autoconf automake bison cmake git telnet \
   telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
-  libsqlite3-dev libpcre3-dev libssl-dev apache2 default-libmysqlclient-dev
+  libsqlite3-dev libpcre3-dev libssl-dev apache2 default-libmysqlclient-dev snapd
 ```
 
 __Ubuntu:__
