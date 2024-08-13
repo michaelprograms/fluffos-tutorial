@@ -1,6 +1,7 @@
 # FluffOS Tutorial
 
 The goal of this tutorial is to document the setup of a server running:
+* a droplet running Ubuntu or Debian
 * the FluffOS driver
 * a basic mudlib (nightmare3)
 * a website
@@ -20,7 +21,7 @@ As such, this tutorial is opinionated and is based on Ubuntu, Apache2, Certbox, 
 5. [Git Setup](#git-setup)
 6. [Driver and Mudlib Setup](#driver-and-mudlib-setup)
 7. [Apache TLS Setup](#apache-tls-setup)
-8. [Fluffos TLS Setup](#fluffos-tls-setup)
+8. [FluffOS TLS Setup](#fluffos-tls-setup)
 9. [Systemd Service Setup](#systemd-service-setup)
 10. [Test Connections](#test-connections)
 11. [Future Updates](#future-updates)
@@ -37,14 +38,14 @@ This tutorial assumes you have the following:
 Create the (second) smallest available Digital Ocean droplet (~$6 USD a month).
 
 Configuration options:
-- Ubuntu 22.10 (LTS) x64
-- 1 vCPU, 1 GB RAM, 25 GB disk
+  Ubuntu:
+    - 1 vCPU, 2 GB RAM
+  Debian:
+    - 1 vCPU, 1 GB RAM
 
 After creation:
 1. [Add your SSH key](https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/).
 2. Make note of `Server IPv4 address`.
-
-*Note: Fluffos needs 1 GB RAM to build.*
 
 # DNS Records
 
@@ -67,7 +68,7 @@ apt-get update -yy && apt-get upgrade -yy && apt-get dist-upgrade -yy
 
 Install required software:
 ```sh
-// Ubuntu:
+# Ubuntu:
 apt-get install -y build-essential autoconf automake bison cmake git telnet \
   telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
   libsqlite3-dev libpcre3-dev libssl-dev apache2 libmysqlclient-dev
@@ -174,7 +175,7 @@ Download mudlib with driver submodule:
 ```sh
 git clone --recurse-submodules git@github.com:fluffos/nightmare3.git
 ```
-*Note: Fluffos driver version included with nightmare3 may be outdated.*
+*Note: FluffOS driver version included with nightmare3 may be outdated.*
 
 Setup for mudlib shortcut/permissions:
 ```sh
@@ -183,7 +184,7 @@ chown -R mud:mud ~mud/game
 find . -type d -exec chmod g+s {} \;
 ```
 
-Build the fluffos driver:
+Build the FluffOS driver:
 ```sh
 cd game
 ./build.sh
@@ -229,7 +230,7 @@ certbot --apache
 
 https://`Server Domain Name` should connect and display.
 
-# Fluffos TLS Setup
+# FluffOS TLS Setup
 
 Seed initial certificates to mudlib:
 ```
@@ -265,7 +266,7 @@ ssh root@`Server Domain Name`
 Create `/etc/systemd/system/mud.service`:
 ```
 [Unit]
-Description = Fluffos MUD Driver
+Description = FluffOS MUD Driver
 After = network-online.target
 
 [Service]
@@ -289,7 +290,7 @@ systemctl start mud
 systemctl status mud
 ```
 
-To check Fluffos MUD Driver output:
+To check FluffOS MUD Driver output:
 ```sh
 journalctl -e -u mud
 ```
@@ -319,7 +320,9 @@ telnet-ssl -z ssl localhost `TLS Telnet Port`
 # Future Updates
 
 This tutorial could be improved with the following updates:
+
 * nightmare3 - verify websocket web client works
 * nightmare3 - should display if user is connected via TLS port
 * nightmare3 - update driver version for efun::sys_refresh_tls(external_port_# of TLS_PORT)
-* ldmud-hook.py - possibility of fork for fluffos
+* ldmud-hook.py - possibility of fork for FluffOS
+* automated script for initial server setup
