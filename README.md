@@ -180,7 +180,7 @@ Setup for mudlib shortcut/permissions:
 ```sh
 ln -s /home/mud/nightmare3/ /home/mud/game
 chown -R mud:mud ~mud/game
-find . -type d -exec chmod -R g+s {} \;
+find . -type d -exec chmod g+s {} \;
 ```
 
 Build the fluffos driver:
