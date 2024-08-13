@@ -1,15 +1,15 @@
 # FluffOS Tutorial
 
-The goal of this tutorial is to document the setup of a server running:
-* a droplet running Ubuntu or Debian
-* the FluffOS driver
-* a basic mudlib (nightmare3)
-* a website
+The goal of this tutorial is to document the setup:
+* a droplet running Linux
+* using the [FluffOS driver](https://github.com/fluffos/fluffos)
+* running the ([nightmare3 mudlib](https://github.com/fluffos/nightmare3))
+* and a website
 * with TLS
 
 This tutorial was inspired by the following LDMud Tutorial: https://github.com/cpu/ldmud-tutorial
 
-As such, this tutorial is opinionated and is based on Ubuntu, Apache2, Certbox, and systemd.
+As such, this tutorial is opinionated and is based on Debian/Ubuntu, Apache2, Certbox, and systemd.
 
 # Overview
 
@@ -31,17 +31,17 @@ As such, this tutorial is opinionated and is based on Ubuntu, Apache2, Certbox, 
 This tutorial assumes you have the following:
 * a Digital Ocean account
 * a domain name to use for `Server Domain Name`
-* command line experience
+* Linux and command line experience
 
 # Server Creation
 
-Create the (second) smallest available Digital Ocean droplet (~$6 USD a month).
+Create the smallest Droplet that satisfies the below RAM requirements. Debian will require less RAM than Ubuntu.
 
-Configuration options:
-  Ubuntu:
-    - 1 vCPU, 2 GB RAM
-  Debian:
-    - 1 vCPU, 1 GB RAM
+__Debian:__ 1 GB RAM (~$6 USD per month)
+
+__Ubuntu:__ 2 GB RAM (~$12 USD per month)
+
+*Note: Ubuntu will require more RAM than Debian.*
 
 After creation:
 1. [Add your SSH key](https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/).
@@ -67,16 +67,19 @@ apt-get update -yy && apt-get upgrade -yy && apt-get dist-upgrade -yy
 ```
 
 Install required software:
-```sh
-# Ubuntu:
-apt-get install -y build-essential autoconf automake bison cmake git telnet \
-  telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
-  libsqlite3-dev libpcre3-dev libssl-dev apache2 libmysqlclient-dev
 
-# Debian:
+__Debian:__
+```sh
 apt-get install -y build-essential autoconf automake bison cmake git telnet \
   telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
   libsqlite3-dev libpcre3-dev libssl-dev apache2 default-libmysqlclient-dev
+```
+
+__Ubuntu:__
+```sh
+apt-get install -y build-essential autoconf automake bison cmake git telnet \
+  telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
+  libsqlite3-dev libpcre3-dev libssl-dev apache2 libmysqlclient-dev
 ```
 
 Setup non-root user:
