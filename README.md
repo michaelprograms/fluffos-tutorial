@@ -227,7 +227,15 @@ curl -o /etc/letsencrypt/renewal-hooks/deploy/fluffos-hook \
   https://gist.githubusercontent.com/cpu/bec1601816db34bb8c9efeb3f78b37c5/raw/c73c7a0b5ce47318710227d25defcf5ae38fc209/ldmud-hook.py
 
 chmod +x /etc/letsencrypt/renewal-hooks/deploy/fluffos-hook
+```
 
+Adjust the line for `certs_path` in `/etc/letsencrypt/renewal-hooks/deploy/fluffos-hook` to point to where TLS certificates will be stored in the mudlib. For example:
+```
+certs_path = f"{mud_home}/lib/secure/etc/tls"
+```
+
+Then:
+```sh
 certbot --apache
 ```
 
@@ -242,10 +250,10 @@ certbot --force-renewal
 
 If it doesn't work, you can manually set up the initial files:
 ```
-cp /etc/letsencrypt/live/`Server Domain Name`/fullchain.pem ~mud/game/cert.pem
-cp /etc/letsencrypt/live/`Server Domain Name`/chain.pem ~mud/game/issuer.pem
-cp /etc/letsencrypt/live/`Server Domain Name`/privkey.pem ~mud/game/key.pem
-chown mud:mud ~mud/game/lib/*.pem
+cp /etc/letsencrypt/live/`Server Domain Name`/fullchain.pem ~mud/game/lib/secure/etc/tls/`Server Domain Name`.crt
+cp /etc/letsencrypt/live/`Server Domain Name`/chain.pem ~mud/game/lib/secure/etc/tls/`Server Domain Name`.issuer.crt
+cp /etc/letsencrypt/live/`Server Domain Name`/privkey.pem ~mud/game/lib/secure/etc/tls/`Server Domain Name`.key
+chown mud:mud ~mud/game/lib/secure/etc/tls/*.pem
 ```
 
 Adjust mudlib config:
@@ -256,7 +264,7 @@ vi /home/mud/game/nm3.cfg
 Add a telnet port with TLS, pointing to the certificates from the previous step:
 ```
 external_port_2: telnet 6667
-external_port_2_tls: cert=cert.pem key=key.pem
+external_port_2_tls: cert=secure/etc/tls/`Server Domain Name`.crt key=`Server Domain Name`.key
 ```
 
 # Systemd Service Setup
