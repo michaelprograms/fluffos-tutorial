@@ -99,6 +99,14 @@ Reboot server after updates:
 systemctl reboot
 ```
 
+Set your timezone if you don't want the default UTC.
+```sh
+timedatectl list-timezones
+```
+```sh
+timedatectl set-timezone America/New_York
+```
+
 # Website Setup
 
 Connect as root user:
