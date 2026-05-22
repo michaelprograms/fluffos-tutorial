@@ -9,7 +9,7 @@ The goal of this tutorial is to document the setup:
 
 This tutorial was inspired by the following LDMud Tutorial: https://github.com/cpu/ldmud-tutorial
 
-As such, this tutorial is opinionated and is based on Debian/Ubuntu, Apache2, Certbox, and systemd.
+As such, this tutorial is opinionated and is based on Debian/Ubuntu, Nginx, Certbot, and systemd.
 
 # Overview
 
@@ -18,13 +18,14 @@ As such, this tutorial is opinionated and is based on Debian/Ubuntu, Apache2, Ce
 2. [DNS Records](#dns-records)
 3. [Server Setup](#server-setup)
 4. [Website Setup](#website-setup)
-5. [Git Setup](#git-setup)
-6. [Driver and Mudlib Setup](#driver-and-mudlib-setup)
-7. [Apache TLS Setup](#apache-tls-setup)
-8. [FluffOS TLS Setup](#fluffos-tls-setup)
-9. [Systemd Service Setup](#systemd-service-setup)
-10. [Test Connections](#test-connections)
-11. [Future Updates](#future-updates)
+5. [No Website Alternative](#no-website-alternative)
+6. [Git Setup](#git-setup)
+7. [Driver and Mudlib Setup](#driver-and-mudlib-setup)
+8. [Nginx TLS Setup](#nginx-tls-setup)
+9. [FluffOS TLS Setup](#fluffos-tls-setup)
+10. [Systemd Service Setup](#systemd-service-setup)
+11. [Test Connections](#test-connections)
+12. [Future Updates](#future-updates)
 
 # Prerequisites
 
@@ -72,14 +73,14 @@ __Debian:__
 ```sh
 apt-get install -y build-essential autoconf automake bison cmake git telnet \
   telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
-  libsqlite3-dev libpcre3-dev libssl-dev apache2 default-libmysqlclient-dev snapd
+  libsqlite3-dev libpcre3-dev libssl-dev nginx default-libmysqlclient-dev
 ```
 
 __Ubuntu:__
 ```sh
 apt-get install -y build-essential autoconf automake bison cmake git telnet \
   telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
-  libsqlite3-dev libpcre3-dev libssl-dev apache2 libmysqlclient-dev
+  libsqlite3-dev libpcre3-dev libssl-dev nginx libmysqlclient-dev
 ```
 
 Setup non-root user:
@@ -129,28 +130,51 @@ EOF
 chown -R mud:www-data /var/www/mud
 ```
 
-Setup Apache:
+Setup Nginx:
 ```sh
-vi /etc/apache2/sites-available/mud.conf
+vi /etc/nginx/sites-available/mud
 ```
 
-```
-<VirtualHost *:80>
-  ServerName    `Server Domain Name`
-  DocumentRoot  /var/www/mud/
-</VirtualHost>
+```nginx
+server {
+    listen 80;
+    server_name `Server Domain Name`;
+    root /var/www/mud;
+    index index.html;
+}
 ```
 
-Disable default, enable mud, restart.
+Disable default, enable mud, reload.
 ```sh
-a2dissite 000-default
+rm /etc/nginx/sites-enabled/default
 
-a2ensite mud
+ln -s /etc/nginx/sites-available/mud /etc/nginx/sites-enabled/
 
-systemctl reload apache2
+nginx -t && systemctl reload nginx
 ```
 
 http://`Server Domain Name` should connect and display.
+
+# No Website Alternative
+
+If you do not need a website, skip [Website Setup](#website-setup) and remove `nginx` from the Server Setup package install. Certbot's standalone mode temporarily binds port 80 only during issuance and renewal — no web server process runs otherwise.
+
+Connect as root user:
+```sh
+ssh root@`Server Domain Name`
+```
+
+Install certbot:
+```sh
+apt-get install -y certbot
+```
+
+Obtain certificate:
+```sh
+certbot certonly --standalone -d `Server Domain Name`
+```
+
+Then skip [Nginx TLS Setup](#nginx-tls-setup) down to the deploy hook and `certs_path` steps, which still apply, then continue at [FluffOS TLS Setup](#fluffos-tls-setup).
 
 # Git Setup
 
@@ -217,19 +241,16 @@ Update mudlib directory to the correct absolute path:
 mudlib directory : /home/mud/game/lib
 ```
 
-# Apache TLS Setup
+# Nginx TLS Setup
 
 Connect as root user:
 ```sh
 ssh root@`Server Domain Name`
 ```
 
-Setup Certbox:
+Setup Certbot:
 ```sh
-snap install core
-snap refresh core
-snap install --classic certbot
-ln -s /snap/bin/certbot /usr/bin/certbot
+apt-get install -y certbot python3-certbot-nginx
 ```
 
 Utilize the LDMud deploy hook to automatically copy renewed certs into mudlib directory:
@@ -249,7 +270,7 @@ certs_path = f"{mud_home}/lib/secure/etc/tls"
 
 Then:
 ```sh
-certbot --apache
+certbot --nginx
 ```
 
 https://`Server Domain Name` should connect and display.
@@ -321,7 +342,8 @@ journalctl -e -u mud
 
 Cap journald in-memory buffer to reduce RAM usage (potentially ~25mb savings):
 ```sh
-`vi /etc/systemd/journald.conf`
+vi /etc/systemd/journald.conf
+```
 Add:
 ```
 RuntimeMaxUse=16M
