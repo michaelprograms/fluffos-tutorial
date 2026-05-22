@@ -319,7 +319,7 @@ To check FluffOS MUD Driver output:
 journalctl -e -u mud
 ```
 
-Cap journald in-memory buffer to reduce RAM usage (potentially ~50mb savings):
+Cap journald in-memory buffer to reduce RAM usage (potentially ~25mb savings):
 ```sh
 `vi /etc/systemd/journald.conf`
 Add:
