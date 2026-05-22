@@ -175,6 +175,11 @@ ssh-add ~/.ssh/id_ed25519
 ```
 Copy `~/.ssh/id_ed25519.pub` to your GitHub SSH keys: https://github.com/settings/keys
 
+Verify the SSH key was added to GitHub successfully:
+```sh
+ssh -T git@github.com
+```
+
 # Driver and Mudlib Setup
 
 Connect as mud user:
