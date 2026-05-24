@@ -73,14 +73,14 @@ __Debian:__
 ```sh
 apt-get install -y build-essential autoconf automake bison cmake git telnet \
   telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
-  libsqlite3-dev libpcre3-dev libssl-dev nginx default-libmysqlclient-dev
+  libsqlite3-dev libpcre3-dev libssl-dev nginx default-libmysqlclient-dev fail2ban
 ```
 
 __Ubuntu:__
 ```sh
 apt-get install -y build-essential autoconf automake bison cmake git telnet \
   telnet-ssl libpq-dev libtool libz-dev libgtest-dev libicu-dev libjemalloc-dev \
-  libsqlite3-dev libpcre3-dev libssl-dev nginx libmysqlclient-dev
+  libsqlite3-dev libpcre3-dev libssl-dev nginx libmysqlclient-dev fail2ban
 ```
 
 Setup non-root user:
@@ -106,6 +106,31 @@ timedatectl list-timezones
 ```
 ```sh
 timedatectl set-timezone America/New_York
+```
+
+Setup fail2ban to ban IPs with repeated failed SSH login attempts:
+```sh
+vi /etc/fail2ban/jail.local
+```
+
+```
+[DEFAULT]
+bantime = 1h
+findtime = 10m
+maxretry = 5
+
+[sshd]
+enabled = true
+backend = systemd
+```
+
+```sh
+systemctl enable fail2ban && systemctl restart fail2ban
+```
+
+Verify the SSH jail is active:
+```sh
+fail2ban-client status sshd
 ```
 
 # Website Setup
@@ -386,3 +411,5 @@ This tutorial could be improved with the following updates:
 * nightmare3 - update driver version for efun::sys_refresh_tls(external_port_# of TLS_PORT)
 * ldmud-hook.py - possibility of fork for FluffOS
 * automated script for initial server setup
+* UFW - configure firewall to allow only required ports
+* unattended-upgrades - automatic security patch application
