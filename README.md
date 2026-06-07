@@ -62,6 +62,12 @@ Connect as root user:
 ssh root@`Server Domain Name`
 ```
 
+*Optional — Ghostty terminal: after first login, verify `$TERM` is recognized on the remote (`toe | grep ghostty`). If it is not listed, deploy Ghostty's terminfo by running the following from your local machine:*
+```sh
+infocmp xterm-ghostty | ssh root@`Server Domain Name` 'tic -x -'
+```
+*This fixes line-wrap truncation and history garbling.*
+
 Update existing software:
 ```sh
 apt-get update -yy && apt-get upgrade -yy && apt-get dist-upgrade -yy
@@ -85,19 +91,16 @@ apt-get install -y build-essential autoconf automake bison cmake git telnet \
 
 Setup non-root user:
 ```sh
-adduser mud
+adduser --disabled-password --gecos "" mud
 ```
+
+`--disabled-password` *locks the account from the start (SSH key auth and* `su - mud` *from root still work).* `--gecos ""` *skips the Full Name / Room Number / etc. prompts.*
 
 Copy SSH key from root user:
 ```sh
 mkdir ~mud/.ssh
 cp ~/.ssh/authorized_keys ~mud/.ssh/
 chown -R mud:mud ~mud/.ssh
-```
-
-Reboot server after updates:
-```sh
-systemctl reboot
 ```
 
 Set your timezone if you don't want the default UTC.
@@ -131,6 +134,11 @@ systemctl enable fail2ban && systemctl restart fail2ban
 Verify the SSH jail is active:
 ```sh
 fail2ban-client status sshd
+```
+
+Reboot server after updates:
+```sh
+systemctl reboot
 ```
 
 # Website Setup
@@ -208,13 +216,19 @@ Connect as mud user:
 ssh mud@`Server Domain Name`
 ```
 
-Setup git:
+*Optional — the mud user's prompt will have no colors by default. Add a colored PS1 to `~/.bashrc` to distinguish it from root:*
+```sh
+echo 'PS1="\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Configure git identity for the mud user:
 ```sh
 git config --global user.email "your@email"
 git config --global user.name "Your Name"
 ```
 
-Setup github key:
+Setup the mud user's GitHub SSH key:
 ```sh
 ssh-keygen -t ed25519 -C "your@email"
 ```
@@ -222,7 +236,7 @@ ssh-keygen -t ed25519 -C "your@email"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
-Copy `~/.ssh/id_ed25519.pub` to your GitHub SSH keys: https://github.com/settings/keys
+Copy the contents of `~/.ssh/id_ed25519.pub` to your GitHub SSH keys: https://github.com/settings/keys
 
 Verify the SSH key was added to GitHub successfully:
 ```sh
@@ -238,16 +252,23 @@ ssh mud@`Server Domain Name`
 
 Download mudlib with driver submodule:
 ```sh
+git clone --recurse-submodules git@github.com:username/`Mudlib Repository`.git
+```
+*Note: FluffOS driver version included with your mudlib may be outdated.*
+
+*If you don't have your own mudlib, you can use [nightmare3](https://github.com/fluffos/nightmare3) as a starting point:*
+```sh
 git clone --recurse-submodules git@github.com:fluffos/nightmare3.git
 ```
-*Note: FluffOS driver version included with nightmare3 may be outdated.*
 
 Setup for mudlib shortcut/permissions:
 ```sh
-ln -s /home/mud/nightmare3/ /home/mud/game
+ln -s /home/mud/`Mudlib Repository`/ /home/mud/game
 chown -R mud:mud ~mud/game
-find . -type d -exec chmod g+s {} \;
+find /home/mud/game -type d -exec chmod g+s {} +
 ```
+
+*The `find` command sets the setgid bit on every subdirectory so files created by the MUD driver inherit the `mud` group.*
 
 Build the FluffOS driver:
 ```sh
