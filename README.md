@@ -406,6 +406,20 @@ Enable MUD service at restart:
 systemctl enable mud
 ```
 
+## Automatic Restarts
+
+On Ubuntu, `needrestart` and `unattended-upgrades` are installed and enabled by
+default. When an automatic update patches a shared library the driver links,
+`needrestart` restarts the service by sending a `SIGTERM` request to the driver
+to terminate the mud process.
+
+To exempt the MUD from automatic restarts, create:
+`/etc/needrestart/conf.d/mud.conf`:
+```
+$nrconf{override_rc} = { qr(^mud\.service$) => 0 };
+```
+Updates still install but the driver keeps running on the old library.
+
 # Test Connections
 
 Connect as root user:
@@ -433,4 +447,4 @@ This tutorial could be improved with the following updates:
 * ldmud-hook.py - possibility of fork for FluffOS
 * automated script for initial server setup
 * UFW - configure firewall to allow only required ports
-* unattended-upgrades - automatic security patch application
+* unattended-upgrades - automatic security patch application (see [Preventing Automatic Restarts](#preventing-automatic-restarts-ubuntu) for the `needrestart` interaction)
