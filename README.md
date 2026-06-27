@@ -3,7 +3,7 @@
 The goal of this tutorial is to document the setup:
 * a droplet running Linux
 * using the [FluffOS driver](https://github.com/fluffos/fluffos)
-* running the ([nightmare3 mudlib](https://github.com/fluffos/nightmare3))
+* running the [nightmare3 mudlib](https://github.com/fluffos/nightmare3)
 * and a website
 * with TLS
 
