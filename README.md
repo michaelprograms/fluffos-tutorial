@@ -325,7 +325,7 @@ https://`Server Domain Name` should connect and display.
 
 Seed initial certificates to mudlib:
 ```
-certbot --force-renewal
+certbot --force-renewal -d `Server Domain Name`
 ```
 
 If it doesn't work, you can manually set up the initial files:
@@ -346,6 +346,19 @@ Add a telnet port with TLS, pointing to the certificates from the previous step:
 external_port_2: telnet 6667
 external_port_2_tls: cert=secure/etc/tls/`Server Domain Name`.crt key=`Server Domain Name`.key
 ```
+
+### Renewals
+
+Certbot will schedule its renewals monthly. The hook will write everything you need to your tls directory, including a `last_updated.txt` file.
+
+`secure/etc/tls/last_updated.txt`:
+
+```sh
+secure/etc/tls/last_updated.txt
+2026-07-02
+```
+
+You can periodically poll this file to inform the game when to call [`sys_reload_tls()`](https://www.fluffos.info/efun/system/sys_reload_tls) and update the certifications without having to reboot.
 
 # Systemd Service Setup
 
